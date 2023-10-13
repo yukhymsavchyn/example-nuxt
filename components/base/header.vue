@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
+import axios from 'axios'
 
 const links = [
   {
@@ -16,15 +17,24 @@ const links = [
   }
 ]
 
-useAsyncData(async () => {
-  console.log('useAsyncData')
+// const asyncData = await useAsyncData(async () => {
+  // const data: any = await axios.get('https://cat-fact.herokuapp.com/facts/')
+  // console.log('useAsyncData', data.data.length)
 
-  return {}
+  // return {
+  //   data: data.data.length || 1
+  // }
+// })
+
+onMounted(async () => {
+  const data: any = await axios.get('https://cat-fact.herokuapp.com/facts/')
+  dataFromServer.value = data.data.length
+  console.log('onMounted', data.data.length)
+
+  console.log('document', document.querySelector('header'))
 })
 
-onMounted(() => {
-  console.log('onMounted')
-})
+const dataFromServer = ref('blabla')
 
 const isValid = ref(false)
 
@@ -33,6 +43,7 @@ const data = computed(() => isValid.value ? 'yes its valid' : 'no its not valid'
 
 <template>
   <header class="header">
+    {{ dataFromServer }} async data
     <nav class="header__nav">
       <nuxt-link v-for="(link, index) in links" class="header__link" :key="index" :to="link.link">{{ link.label }}</nuxt-link>
     </nav>
